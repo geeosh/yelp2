@@ -73,7 +73,7 @@ module Yelp
       uri = Addressable::URI.new(  
         :scheme => "http",
         :host => API_HOST,
-        :path => BUSINESS_PATH + '/' + yelp_id)
+        :path => BUSINESS_PATH + '/' + URI.escape(yelp_id))
 
       perform_request(uri)
     end
