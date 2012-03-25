@@ -24,7 +24,7 @@ module Yelp
       id == other.id
     end
     
-    def hash
+    def to_hash
       @hash
     end
 
