@@ -23,6 +23,10 @@ module Yelp
     def ==(other)
       id == other.id
     end
+    
+    def fetch_details
+      Yelp::Base.find_business(id)
+    end
 
   end
   
