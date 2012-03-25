@@ -23,6 +23,10 @@ module Yelp
     def ==(other)
       id == other.id
     end
+    
+    def hash
+      @hash
+    end
 
   end
   
