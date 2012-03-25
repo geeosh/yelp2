@@ -8,6 +8,7 @@ module Yelp
     API_PATH = "/v2"
     
     SEARCH_PATH = "#{API_PATH}/search"
+    BUSINESS_PATH = "#{API_PATH}/business"
     
     # Initializes the base object through which you access the Yelp API. 
     #
@@ -44,8 +45,16 @@ module Yelp
     def search_with_coordinates(term, latitude, longitude, options={})
       search_businesses(term, options.merge(:ll=>"#{latitude},#{longitude}"))
     end
+    
+    # Fetch a specific business' details
+    #
+    # +business id+ - The yelp id for this business
+    #
+    def find_business(yelp_id)
+      find_business_with_id(yelp_id)
+    end
 
-    private 
+    private
     
     def search_businesses(term, options)
       uri = Addressable::URI.new(  
@@ -57,15 +66,29 @@ module Yelp
         :term => term,
       }.merge(options.inject({}){|h,(k,v)| h[k] = v.to_s; h})
 
+      perform_request(uri)
+    end
+    
+    def find_business_with_id(yelp_id)
+      uri = Addressable::URI.new(  
+        :scheme => "http",
+        :host => API_HOST,
+        :path => BUSINESS_PATH + '/' + yelp_id)
+
+      perform_request(uri)
+    end
+    
+    def perform_request(uri)
       res = @access_token.get(uri.to_s)
       hash = JSON.parse(res.body)
       if hash["error"]
         raise hash["error"]["text"]
-      else
+      elsif !hash['businesses'].blank? # multiple businesses result
         hash["businesses"].collect {|b| Yelp::Business.new(b)} 
+      elsif hash.length > 0 # single business result
+        Yelp::Business.new(hash)
       end
     end
-
   end
 
 end
