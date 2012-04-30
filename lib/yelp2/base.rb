@@ -19,7 +19,7 @@ module Yelp
     # +token+           - OAuth2 Access Token
     # +token_secret+    - OAuth2 Access Secret
     def initialize(consumer_key, consumer_secret, token, token_secret)
-      @consumer = OAuth::Consumer.new(consumer_key, consumer_secret, {:site => API_HOST})
+      @consumer = OAuth::Consumer.new(consumer_key, consumer_secret)
       @access_token = OAuth::AccessToken.new(@consumer, token, token_secret)
     end
     
